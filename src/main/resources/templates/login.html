@@ -48,15 +48,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* จุดที่แก้: เพิ่ม overflow-x เพื่อล็อคหน้าจอไม่ให้สไลด์ซ้ายขวา */
             overflow-x: hidden;
             transition: all 0.3s ease;
             position: relative;
         }
 
         /* พื้นหลังแบบมีลูกเล่น (Animated Background) */
+        /* จุดที่แก้: เปลี่ยนเป็น fixed เพื่อไม่ให้มันไปดันขอบจอเวลาแสดงผลในมือถือ */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             width: 500px;
             height: 500px;
             background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
@@ -67,7 +69,7 @@
 
         body::after {
             content: "";
-            position: absolute;
+            position: fixed;
             width: 400px;
             height: 400px;
             background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
@@ -142,9 +144,9 @@
             border: 1px solid rgba(14, 165, 233, 0.2);
         }
 
-        /* --- FORM GROUPS (แก้ไขระยะห่างที่มึงด่า) --- */
+        /* --- FORM GROUPS --- */
         .form-group {
-            margin-bottom: 20px; /* ลดระยะห่างให้ชิดพอดี */
+            margin-bottom: 20px; 
             position: relative;
         }
 
