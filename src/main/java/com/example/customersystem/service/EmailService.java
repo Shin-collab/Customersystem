@@ -10,12 +10,13 @@ import java.net.http.HttpResponse;
 public class EmailService {
 
     public void sendOtpEmail(String email, String otp) {
+        // ดึง API Key จาก Environment Variable
         String apiKey = System.getenv("BREVO_API_KEY"); 
         
-        System.out.println("📡 [EmailService] เริ่มส่งเมลไปที่: " + email);
+        System.out.println("Trying to send OTP to: " + email);
         
         if (apiKey == null || apiKey.isEmpty()) {
-            System.err.println("❌ [Error] BREVO_API_KEY หาย!");
+            System.err.println("API Key is missing! Check BREVO_API_KEY environment variable.");
             return; 
         }
 
@@ -23,7 +24,7 @@ public class EmailService {
                 + "\"sender\":{\"name\":\"GSB Portal\",\"email\":\"sskg82760@gmail.com\"},"
                 + "\"to\":[{\"email\":\"" + email + "\"}],"
                 + "\"subject\":\"Your OTP Code: " + otp + "\","
-                + "\"htmlContent\":\"<html><body><h3>รหัส OTP ของคุณคือ: <b style='color:blue;'>" + otp + "</b></h3></body></html>\""
+                + "\"htmlContent\":\"<html><body><h3>OTP Code: <b style='color:blue;'>" + otp + "</b></h3></body></html>\""
                 + "}";
 
         try {
@@ -37,16 +38,16 @@ public class EmailService {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             
-            System.out.println("📡 Brevo Response Status: " + response.statusCode());
-            System.out.println("📡 Brevo Response Body: " + response.body());
-
+            // log ผลลัพธ์เอาไว้เช็ค
+            System.out.println("Status: " + response.statusCode());
+            
             if (response.statusCode() >= 400) {
-                System.err.println("❌ [Brevo API Error]: " + response.body());
+                System.err.println("Brevo Error: " + response.body());
             } else {
-                System.out.println("✅ [SUCCESS] OTP ส่งเรียบร้อย!");
+                System.out.println("Email sent successfully!");
             }
         } catch (Exception e) {
-            System.err.println("❌ [Critical Error]: " + e.getMessage());
+            System.err.println("Error sending email: " + e.getMessage());
             e.printStackTrace();
         }
     }
