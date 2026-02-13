@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CustomersystemApplication {
 	
 	public static void main(String[] args) {
+		// รันโปรเจกต์ Customer Management System
 		SpringApplication.run(CustomersystemApplication.class, args);
 	}
 
