@@ -17,16 +17,19 @@ public class Customer {
     @Column(name = "created_by")
     private String createdBy;
 
+    // ข้อมูลพื้นฐาน
     private String name;        
     private String nickname;    
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
+    // ที่อยู่
     private String houseNo;     
     private String province;    
     private String zipcode;     
 
+    // การทำงานและการศึกษา
     private String occupation;  
     private String workPlace;   
     private String education;   
@@ -34,10 +37,11 @@ public class Customer {
     private String educationYear; 
     private String schoolName;  
 
+    // ข้อมูลสุขภาพ
     private String disease; 
     private String allergy; 
 
-    // --- เพิ่ม Getter & Setter แบบ Manual เพื่อแก้ปัญหา Build Error ใน VS Code ---
+    // --- Getter & Setter (ทำ Manual เพราะ VS Code มองไม่เห็น Lombok) ---
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -87,8 +91,9 @@ public class Customer {
     public String getAllergy() { return allergy; }
     public void setAllergy(String allergy) { this.allergy = allergy; }
 
-    // Helper: คำนวณอายุ
+    // คำนวณอายุจากวันเกิด
     public int getAge() {
-        return (birthDate != null) ? Period.between(birthDate, LocalDate.now()).getYears() : 0;
+        if (birthDate == null) return 0;
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }
