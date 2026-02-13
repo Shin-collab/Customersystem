@@ -25,7 +25,7 @@ public class User {
     private String avatar; 
     private String resetPasswordToken;
 
-    // --- ต้องใส่ Manual เพราะ Lombok ในเครื่องเอ๋อ ---
+    // --- เพิ่ม Getter/Setter ด้วยตนเอง เพื่อรองรับการ Build ของ IDE (Lombok Compatibility) ---
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
