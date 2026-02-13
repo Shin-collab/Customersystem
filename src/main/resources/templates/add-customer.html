@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KYC | GSB Portal - Customer Management System</title>
+    <title>KYC | GSB Portal - ระบบจัดการข้อมูลลูกค้า</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <style>
-        /* =========================================
-           1. ROOT & THEME VARIABLES
-           ========================================= */
+        /* กำหนดค่าตัวแปรสีพื้นฐาน (Theme Settings) */
         :root { 
             --primary: #eb008b; 
             --primary-hover: #c40076;
@@ -28,6 +26,7 @@
             --glass: rgba(255, 255, 255, 0.8);
         }
         
+        /* Dark Mode Configuration */
         [data-theme="dark"] { 
             --bg-body: #020617; 
             --bg-card: #111827; 
@@ -40,9 +39,7 @@
             --glass: rgba(31, 41, 55, 0.7);
         }
 
-        /* =========================================
-           2. GLOBAL STYLES
-           ========================================= */
+        /* รีเซ็ตค่าเริ่มต้นของ Browser */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -62,9 +59,7 @@
             min-height: 100vh;
         }
 
-        /* =========================================
-           3. CARD & LAYOUT
-           ========================================= */
+        /* ส่วนประกอบของ Card */
         .card { 
             background: var(--bg-card); 
             max-width: 800px; 
@@ -95,9 +90,7 @@
             text-transform: uppercase;
         }
         
-        /* =========================================
-           4. FORM ELEMENTS
-           ========================================= */
+        /* การจัดการระบบ Grid */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
@@ -105,7 +98,9 @@
             margin-bottom: 22px; 
         }
         
-        .full { grid-column: span 2; }
+        .full { 
+            grid-column: span 2; 
+        }
         
         label { 
             font-weight: 600; 
@@ -117,7 +112,10 @@
             color: var(--text-label); 
         }
 
-        label i { color: var(--primary); font-size: 0.85rem; }
+        label i { 
+            color: var(--primary); 
+            font-size: 0.85rem; 
+        }
         
         input, select { 
             width: 100%; 
@@ -136,9 +134,7 @@
             box-shadow: 0 0 0 4px var(--primary-light); 
         }
 
-        /* =========================================
-           5. DYNAMIC EDUCATION BOX (The Logic Part)
-           ========================================= */
+        /* กล่องข้อมูลการศึกษาที่จะแสดงเมื่อเลือกอาชีพ 'กำลังศึกษา' */
         #eduBox { 
             display: none; 
             background: var(--glass); 
@@ -151,12 +147,10 @@
         }
 
         #majorRow {
-            display: block; /* Default visible inside eduBox */
+            display: block; 
         }
         
-        /* =========================================
-           6. BUTTONS & UI COMPONENTS
-           ========================================= */
+        /* ปุ่มต่างๆ ในหน้าเว็บ */
         .btn-row { 
             display: flex; 
             gap: 15px; 
@@ -213,14 +207,21 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* =========================================
-           7. RESPONSIVE DESIGN
-           ========================================= */
+        /* การแสดงผลบนหน้าจอมือถือ */
         @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; gap: 18px; }
-            .full { grid-column: span 1; }
-            .card { padding: 30px 20px; }
-            .h-title { font-size: 1.6rem; }
+            .grid { 
+                grid-template-columns: 1fr; 
+                gap: 18px; 
+            }
+            .full { 
+                grid-column: span 1; 
+            }
+            .card { 
+                padding: 30px 20px; 
+            }
+            .h-title { 
+                font-size: 1.6rem; 
+            }
         }
     </style>
 </head>
@@ -234,6 +235,7 @@
     <div class="h-title">บันทึกข้อมูลลูกค้า (KYC)</div>
     
     <form th:action="@{/customers/save}" th:object="${customer}" method="post" id="kycForm">
+        
         <input type="hidden" th:field="*{id}">
         
         <div class="grid">
@@ -292,6 +294,7 @@
                             <option value="สูงกว่าปริญญาตรี">สูงกว่าปริญญาตรี</option>
                         </select>
                     </div>
+                    
                     <div>
                         <label><i class="fa-solid fa-list-ol"></i> ชั้นปี/ระดับชั้น</label>
                         <input type="text" th:field="*{educationYear}" placeholder="เช่น ม.6 หรือ ปี 4">
@@ -326,15 +329,20 @@
                 <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลลูกค้า
             </button>
         </div>
+        
     </form>
 </div>
 
 <script>
-    // ระบบจัดการ Theme
+    /**
+     * การจัดการ Theme (Dark / Light Mode)
+     * เก็บค่าลง LocalStorage เพื่อให้โหลดค่าเดิมได้เมื่อ Refresh
+     */
     const toggleTheme = () => {
         const html = document.documentElement;
         const current = html.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
+        
         html.setAttribute('data-theme', next);
         localStorage.setItem('gsb-theme', next);
         updateThemeIcon(next);
@@ -342,15 +350,22 @@
     
     const updateThemeIcon = (theme) => {
         const icon = document.querySelector('.theme-btn i');
-        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        if (theme === 'dark') {
+            icon.className = 'fa-solid fa-sun';
+        } else {
+            icon.className = 'fa-solid fa-moon';
+        }
     };
 
-    // โหลดค่าเริ่มต้น
+    // โหลดค่า Theme เริ่มต้น
     const savedTheme = localStorage.getItem('gsb-theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
 
-    // ฟังก์ชันหลัก: ควบคุม UI ทั้งหมด (อาชีพ & การศึกษา)
+    /**
+     * ฟังก์ชันจัดการ UI ส่วนการศึกษา
+     * จะถูกเรียกใช้เมื่อมีการเปลี่ยนอาชีพ หรือเปลี่ยนระดับการศึกษา
+     */
     function handleUIUpdate() { 
         const occupation = document.getElementById('occ').value;
         const eduBox = document.getElementById('eduBox');
@@ -359,49 +374,56 @@
         const majorLabel = document.getElementById('majorLabel');
         const majorInput = document.getElementById('majorInput');
 
-        // 1. ตรวจสอบอาชีพ "กำลังศึกษา"
+        // กรณีเลือกอาชีพ 'กำลังศึกษา' ให้แสดงกล่องข้อมูลการศึกษา
         if (occupation === 'กำลังศึกษา') {
             eduBox.style.display = 'block';
             
-            // 2. ตรวจสอบระดับการศึกษา (ซ่อน/แสดง คณะ)
-            // ระดับภาคบังคับ/เด็กเล็ก: อนุบาล, ประถม, ม.ต้น -> ไม่ต้องมีคณะ
+            // ตรวจสอบระดับการศึกษาเพื่อซ่อน/แสดงช่อง คณะ
             const basicLevels = ['อนุบาล', 'ประถมศึกษา', 'มัธยมศึกษาตอนต้น'];
             
             if (basicLevels.includes(education) || education === '') {
                 majorRow.style.display = 'none';
-                majorInput.value = ''; // เคลียร์ค่าทิ้ง
+                majorInput.value = ''; 
             } else {
                 majorRow.style.display = 'block';
                 
-                // 3. เปลี่ยน Label ตามประเภท (ปวช./ปวส./ม.ปลาย/ป.ตรี)
+                // เปลี่ยนข้อความ Label ตามระดับการศึกษาให้เหมาะสม
                 if (education === 'มัธยมศึกษาตอนปลาย') {
                     majorLabel.innerHTML = '<i class="fa-solid fa-book"></i> แผนการเรียน (เช่น วิทย์-คณิต)';
                     majorInput.placeholder = 'ระบุแผนการเรียน';
                 } else if (education === 'ปวช.' || education === 'ปวส.') {
                     majorLabel.innerHTML = '<i class="fa-solid fa-wrench"></i> สาขาวิชา / แผนกวิชา';
-                    majorInput.placeholder = 'เช่น ช่างยนต์, บัญชี, คอมพิวเตอร์';
+                    majorInput.placeholder = 'เช่น ช่างยนต์, บัญชี';
                 } else {
                     majorLabel.innerHTML = '<i class="fa-solid fa-university"></i> คณะ / สาขาวิชา';
                     majorInput.placeholder = 'ระบุคณะและสาขา';
                 }
             }
         } else {
+            // ถ้าอาชีพอื่น ไม่แสดงส่วนการศึกษา
             eduBox.style.display = 'none';
         }
     }
 
-    // Validation ก่อนส่งฟอร์ม
+    /**
+     * ตรวจสอบความถูกต้องก่อนส่งฟอร์ม (Form Validation)
+     */
     document.getElementById('kycForm').onsubmit = function() {
-        const name = document.getElementById('nm').value;
-        if (/[\d]/.test(name)) {
-            alert('❌ กรุณากรอกชื่อ-นามสกุล เป็นตัวอักษรเท่านั้น');
+        const nameInput = document.getElementById('nm').value;
+        
+        // เช็คว่าในชื่อมีตัวเลขหรือไม่
+        if (/[\d]/.test(nameInput)) {
+            alert('❌ กรุณากรอกชื่อ-นามสกุล เป็นตัวอักษรเท่านั้น (ห้ามมีตัวเลข)');
             return false;
         }
-        return true;
+        
+        return true; // ส่งฟอร์มได้
     };
 
-    // รันฟังก์ชันเมื่อโหลดหน้าเสร็จ
-    window.onload = handleUIUpdate;
+    // เรียกใช้ฟังก์ชันทันทีที่โหลดหน้าเสร็จ เพื่อตั้งค่า UI ให้ถูกต้อง
+    window.onload = function() {
+        handleUIUpdate();
+    };
 </script>
 </body>
 </html>
