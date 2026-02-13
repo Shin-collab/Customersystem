@@ -18,14 +18,14 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
     private String name; 
     private String avatar; 
     private String resetPasswordToken;
 
-    // --- เพิ่ม Getter & Setter แบบ Manual เพื่อแก้ปัญหา Build Failure ---
+    // --- ต้องใส่ Manual เพราะ Lombok ในเครื่องเอ๋อ ---
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
