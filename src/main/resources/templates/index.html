@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | GSB Portal</title>
+    <title>Dashboard | GSB Portal - ระบบจัดการข้อมูลลูกค้า</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@100;300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* =========================================
+           1. GLOBAL VARIABLES & THEMES
+           ========================================= */
         :root {
             --pk: #eb008b; 
             --bg: #f1f5f9;
@@ -16,6 +21,7 @@
             --tx-m: #64748b; 
             --bd: #cbd5e1; 
             --hv: #fff5f7;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] {
@@ -26,9 +32,15 @@
             --tx-m: #94a3b8; 
             --bd: #374151; 
             --hv: rgba(235, 0, 139, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: 0.2s ease; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease; 
+        }
         
         body { 
             font-family: 'Sarabun', sans-serif; 
@@ -38,20 +50,33 @@
             min-height: 100vh;
         }
 
+        /* =========================================
+           2. NAVIGATION BAR
+           ========================================= */
         nav { 
             background: var(--nv); 
-            padding: 1rem 5%; 
+            padding: 0.8rem 5%; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             border-bottom: 1px solid var(--bd); 
             position: sticky; 
             top: 0; 
-            z-index: 100; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 1000; 
+            box-shadow: var(--shadow);
         }
 
-        .container { max-width: 1240px; margin: 2rem auto; padding: 0 1.5rem; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--tx); }
+        .logo span { color: var(--pk); }
+
+        /* =========================================
+           3. CONTAINER & CONTROLS
+           ========================================= */
+        .container { 
+            max-width: 1240px; 
+            margin: 2rem auto; 
+            padding: 0 1.5rem; 
+        }
         
         .toolbar { 
             display: flex; 
@@ -61,8 +86,15 @@
             gap: 20px; 
         }
         
+        /* Search Logic Display */
         .search-container { position: relative; flex: 1; max-width: 450px; }
-        .search-container i { position: absolute; left: 18px; top: 15px; color: var(--pk); }
+        .search-container i { 
+            position: absolute; 
+            left: 18px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--pk); 
+        }
         .search-container input { 
             width: 100%; 
             padding: 14px 20px 14px 50px; 
@@ -75,6 +107,9 @@
         }
         .search-container input:focus { border-color: var(--pk); box-shadow: 0 0 0 4px rgba(235, 0, 139, 0.1); }
 
+        /* =========================================
+           4. TABLE DESIGN
+           ========================================= */
         .data-table { 
             width: 100%; 
             background: var(--cd); 
@@ -83,7 +118,7 @@
             border-spacing: 0; 
             overflow: hidden; 
             border: 1px solid var(--bd);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); 
         }
         
         .data-table th { 
@@ -108,6 +143,9 @@
         .tag-edu { background: rgba(56, 189, 248, 0.15); color: #0284c7; }
         .tag-major { background: rgba(235, 0, 139, 0.1); color: var(--pk); margin-left: 5px; }
 
+        /* =========================================
+           5. BUTTONS & ACTIONS
+           ========================================= */
         .btn-pink { 
             background: var(--pk); 
             color: #fff !important; 
@@ -118,7 +156,7 @@
             display: flex; 
             align-items: center; 
             gap: 8px;
-            box-shadow: 0 4px 14px 0 rgba(235, 0, 139, 0.39);
+            box-shadow: 0 4px 14px 0 rgba(235, 0, 139, 0.3);
         }
         .btn-pink:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
@@ -139,6 +177,9 @@
         }
         .logout-btn { background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer; font-size: 1.1rem; }
 
+        /* =========================================
+           6. RESPONSIVE ENGINE (Table to Cards)
+           ========================================= */
         @media (max-width: 1024px) {
             nav { padding: 1rem; flex-direction: column; gap: 15px; }
             .toolbar { flex-direction: column; align-items: stretch; }
@@ -150,6 +191,7 @@
             .data-table td::before { content: attr(data-label); font-weight: 800; color: var(--pk); font-size: 0.8rem; }
         }
 
+        /* Dark Mode Switch Styling */
         .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; margin-right: 10px; }
         .theme-switch { display: inline-block; height: 22px; position: relative; width: 44px; }
         .theme-switch input { display:none; }
@@ -162,7 +204,8 @@
 <body>
 
 <nav>
-    <div style="font-weight: 800; font-size: 1.5rem; color: var(--tx);">GSB <span style="color: var(--pk);">PORTAL</span></div>
+    <div class="logo">GSB <span>PORTAL</span></div>
+    
     <div style="display: flex; align-items: center; gap: 15px;">
         <div class="theme-switch-wrapper">
             <i class="fa-solid fa-sun" style="color: #eab308;"></i>
@@ -172,11 +215,12 @@
         
         <div class="user-section">
             <a th:href="@{/profile}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--tx); font-weight: 600;">
-                <img th:src="${user.avatar != null ? user.avatar : 'https://ui-avatars.com/api/?name='+user.name+'&background=eb008b&color=fff'}" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--pk); object-fit: cover;">
+                <img th:src="${user.avatar != null ? user.avatar : 'https://ui-avatars.com/api/?name='+user.name+'&background=eb008b&color=fff'}" 
+                     style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--pk); object-fit: cover;">
                 <span th:text="${user.name}" style="font-size: 0.9rem;">User</span>
             </a>
             <form th:action="@{/logout}" method="post" style="margin: 0; display: flex; align-items: center;">
-                <button type="submit" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <button type="submit" class="logout-btn" title="ออกจากระบบ"><i class="fa-solid fa-right-from-bracket"></i></button>
             </form>
         </div>
     </div>
@@ -219,30 +263,45 @@
                         <div th:if="${(c.disease == null || c.disease == '' || c.disease == '-') && (c.allergy == null || c.allergy == '' || c.allergy == '-')}" style="opacity: 0.3;">-</div>
                         <div th:unless="${(c.disease == null || c.disease == '' || c.disease == '-') && (c.allergy == null || c.allergy == '' || c.allergy == '-')}" style="font-size: 0.9rem;">
                             <div th:if="${c.disease != null && c.disease != '' && c.disease != '-'}" th:text="${c.disease}"></div>
-                            <div th:if="${c.allergy != null && c.allergy != '' && c.allergy != '-'}" style="color: #ef4444; font-weight: 600;" th:text="'แพ้: ' + ${c.allergy}"></div>
+                            <div th:if="${c.allergy != null && c.allergy != '' && c.allergy != '-'}" 
+                                 style="color: #ef4444; font-weight: 600;" th:text="'แพ้: ' + ${c.allergy}"></div>
                         </div>
                     </td>
                     <td data-label="จังหวัด" style="font-weight: 500;" th:text="${c.province}">-</td>
                     <td data-label="จัดการ">
                         <div class="action-btns">
-                            <a th:href="@{'/customers/edit/' + ${c.id}}" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <a th:href="@{'/customers/delete/' + ${c.id}}" class="btn-del" onclick="return confirm('ยืนยันการลบข้อมูลลูกค้าท่านนี้?')"><i class="fa-solid fa-trash-can"></i></a>
+                            <a th:href="@{'/customers/edit/' + ${c.id}}" class="btn-edit" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a th:href="@{'/customers/delete/' + ${c.id}}" class="btn-del" 
+                               onclick="return confirm('ยืนยันการลบข้อมูลลูกค้าท่านนี้?')" title="ลบข้อมูล"><i class="fa-solid fa-trash-can"></i></a>
                         </div>
                     </td>
                 </tr>
-            </tbody>
+                </tbody>
         </table>
     </div>
 </div>
 
 <script>
+    /**
+     * ฟังก์ชันค้นหาข้อมูลในตารางแบบ Client-side
+     */
     function search() {
         let v = document.getElementById("q").value.toUpperCase();
-        document.querySelectorAll("#customerTable tbody tr").forEach(r => {
-            r.style.display = r.innerText.toUpperCase().includes(v) ? "" : "none";
+        const rows = document.querySelectorAll("#customerTable tbody tr");
+        
+        rows.forEach(r => {
+            const match = r.innerText.toUpperCase().includes(v);
+            r.style.display = match ? "" : "none";
+            // เพิ่ม Animation เล็กน้อยเวลาแถวปรากฏ
+            if (match) {
+                r.style.animation = "fadeIn 0.3s ease";
+            }
         });
     }
 
+    /**
+     * ระบบจัดการ Dark / Light Mode
+     */
     const toggleSwitch = document.querySelector('.theme-switch input');
     const currentTheme = localStorage.getItem('theme') || 'light';
 
@@ -255,5 +314,13 @@
         localStorage.setItem('theme', theme);
     });
 </script>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 </body>
 </html>
