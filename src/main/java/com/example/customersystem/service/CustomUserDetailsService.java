@@ -11,26 +11,30 @@ import java.util.ArrayList;
 @Service("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepo;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String loginInput) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(loginInput);
+    public UserDetails loadUserByUsername(String input) throws UsernameNotFoundException {
+        // ลองหาจาก Username ก่อน
+        User user = userRepo.findByUsername(input);
+        
+        // ถ้าไม่เจอค่อยลองหาจาก Email
         if (user == null) {
-            user = userRepository.findByEmail(loginInput);
+            user = userRepo.findByEmail(input);
         }
 
         if (user == null) {
-            throw new UsernameNotFoundException("ไม่พบผู้ใช้งานหรืออีเมล: " + loginInput);
+            throw new UsernameNotFoundException("User not found: " + input);
         }
+
         return new org.springframework.security.core.userdetails.User(
             user.getUsername(), 
             user.getPassword(), 
-            new ArrayList<>()
+            new ArrayList<>() // ยังไม่มี roles/authorities
         );
     }
 }
