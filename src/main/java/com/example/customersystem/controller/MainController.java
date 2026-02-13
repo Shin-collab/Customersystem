@@ -27,8 +27,7 @@ public class MainController {
         
             List<Customer> list = customerRepo.findByCreatedBy(username);
             model.addAttribute("customers", list);
-
-            // ดึงโปรไฟล์คนล็อคอิน
+            
             model.addAttribute("user", userRepo.findByUsername(username));
         }
         return "index";
