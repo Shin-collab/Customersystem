@@ -15,7 +15,6 @@ public class UserController {
     private final UserRepository userRepo;
     private final BCryptPasswordEncoder encoder;
 
-    // Constructor Injection ตามมาตรฐานที่นายต้องการ
     public UserController(UserRepository userRepo, BCryptPasswordEncoder encoder) {
         this.userRepo = userRepo;
         this.encoder = encoder;
@@ -24,28 +23,30 @@ public class UserController {
     @PostMapping("/update-password")
     public String updatePassword(@RequestParam String oldPassword, 
                                  @RequestParam String newPassword, 
-                                 Principal principal, RedirectAttributes ra) {
-        User user = userRepo.findByUsername(principal.getName());
+                                 Principal p, RedirectAttributes ra) {
+        
+        User user = userRepo.findByUsername(p.getName());
 
-        // 1. ตรวจสอบรหัสผ่านเดิม (สมจริงและปลอดภัย)
+        // เช็ครหัสผ่านเก่าว่าตรงกับใน DB มั้ย
         if (!encoder.matches(oldPassword, user.getPassword())) {
             ra.addFlashAttribute("error", "รหัสผ่านเดิมไม่ถูกต้อง!");
             return "redirect:/profile";
         }
 
-        // 2. อัปเดตรหัสใหม่แบบเข้ารหัส
+        // เข้ารหัสใหม่ก่อนเซฟ
         user.setPassword(encoder.encode(newPassword));
         userRepo.save(user);
+        
         ra.addFlashAttribute("success", "เปลี่ยนรหัสผ่านสำเร็จแล้ว");
         return "redirect:/profile";
     }
 
     @PostMapping("/update-avatar")
-    public String updateAvatar(@RequestParam String avatarUrl, Principal principal) {
-        // รับ URL รูปภาพมาบันทึกลง Profile
-        User user = userRepo.findByUsername(principal.getName());
+    public String updateAvatar(@RequestParam String avatarUrl, Principal p) {
+        User user = userRepo.findByUsername(p.getName());
         user.setAvatar(avatarUrl);
         userRepo.save(user);
+        
         return "redirect:/profile";
     }
 }
