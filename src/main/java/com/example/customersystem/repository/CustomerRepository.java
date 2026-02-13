@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     
-    // เพิ่มบรรทัดนี้ครับ: เพื่อให้หาข้อมูลเฉพาะลูกค้าที่ User คนนั้นๆ เป็นคนสร้าง
-    List<Customer> findByCreatedBy(String email);
+    // ดึงรายชื่อลูกค้าตามชื่อผู้สร้าง (Username)
+    List<Customer> findByCreatedBy(String createdBy);
     
 }
