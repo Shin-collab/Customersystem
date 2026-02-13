@@ -24,46 +24,40 @@ public class CustomerController {
     }
 
     @GetMapping("/edit/{id}")
-    public String viewEditPage(@PathVariable("id") Long id, Model model, Principal principal) {
-        // เช็คความปลอดภัยเบื้องต้น
-        if (id == null || principal == null) return "redirect:/";
+    public String viewEditPage(@PathVariable Long id, Model model, Principal p) {
+        if (id == null || p == null) return "redirect:/";
 
-        Customer customer = customerRepo.findById(id).orElse(null);
-        if (customer == null) return "redirect:/";
+        Customer c = customerRepo.findById(id).orElse(null);
+        if (c == null) return "redirect:/";
 
-        // ตรวจสอบสิทธิ์: ชื่อคนล็อกอิน (principal.getName()) ตรงกับเจ้าของข้อมูลไหม
-        String currentUsername = principal.getName();
-        if (customer.getCreatedBy() == null || !customer.getCreatedBy().equals(currentUsername)) {
+        String user = p.getName();
+        if (c.getCreatedBy() == null || !c.getCreatedBy().equals(user)) {
             return "redirect:/?error=no_permission"; 
         }
 
-        model.addAttribute("customer", customer);
+        model.addAttribute("customer", c);
         return "add-customer";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") Long id, Principal principal) {
-        if (id == null || principal == null) return "redirect:/";
+    public String deleteCustomer(@PathVariable Long id, Principal p) {
+        if (id == null || p == null) return "redirect:/";
 
-        Customer customer = customerRepo.findById(id).orElse(null);
-        if (customer != null) {
-            String currentUsername = principal.getName();
-            // ลบได้เฉพาะข้อมูลที่ตัวเองสร้างเท่านั้น
-            if (currentUsername.equals(customer.getCreatedBy())) {
-                customerRepo.deleteById(id);
-            }
+        Customer c = customerRepo.findById(id).orElse(null);
+        if (c != null && p.getName().equals(c.getCreatedBy())) {
+            customerRepo.deleteById(id);
         }
         return "redirect:/";
     }
 
     @PostMapping("/save")
-    public String saveCustomer(@ModelAttribute("customer") Customer customer, Principal principal) {
-        if (principal == null) return "redirect:/login";
+    public String saveCustomer(@ModelAttribute("customer") Customer customer, Principal p) {
+        if (p == null) return "redirect:/login";
 
-        // ฝังชื่อ User ที่ล็อกอินอยู่ลงไปในฟิลด์ createdBy
-        customer.setCreatedBy(principal.getName());
+        
+        customer.setCreatedBy(p.getName());
 
-        // Logic จัดการข้อมูลการศึกษาเหมือนเดิม
+        // ไม่ได้เรียนอยู่ใส่ - ให้หมด
         if (!"กำลังศึกษา".equals(customer.getOccupation())) {
             customer.setEducation("-");
             customer.setEducationYear("-");
