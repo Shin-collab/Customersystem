@@ -4,7 +4,7 @@ import com.example.customersystem.model.User;
 import com.example.customersystem.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // 1. กุเพิ่มตัวนี้เพื่อใช้ระบบ Rollback
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -20,24 +20,23 @@ public class UserService {
     @Transactional 
     public void saveUser(User user) {
         
-        // เช็คชื่อซ้ำ
+        // ตรวจสอบชื่อซ้ำ (Validation)
         User existingUser = userRepo.findByUsername(user.getUsername());
         if (existingUser != null && !existingUser.getId().equals(user.getId())) {
-            throw new RuntimeException("ชื่อผู้ใช้นี้ถูกใช้งานแล้ว กรุณาใช้ชื่ออื่น");
+            throw new RuntimeException("Username นี้มีคนใช้แล้ว");
         }
 
-        // เช็คอีเมลซ้ำ
+        // ตรวจสอบอีเมลซ้ำ
         User existingEmail = userRepo.findByEmail(user.getEmail());
         if (existingEmail != null && !existingEmail.getId().equals(user.getId())) {
-            throw new RuntimeException("อีเมลนี้ถูกลงทะเบียนไว้แล้ว");
+            throw new RuntimeException("Email นี้มีคนใช้แล้ว");
         }
 
-        // เข้ารหัสผ่าน
+        // เข้ารหัสผ่านเฉพาะกรณีที่เป็นรหัสใหม่ (ยังไม่โดน Hash)
         if (user.getPassword() != null && user.getPassword().length() < 30) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        // บันทึกข้อมูล
         userRepo.save(user); 
     }
 
@@ -54,10 +53,10 @@ public class UserService {
     }
 
     @Transactional 
-    public boolean updatePassword(String email, String oldPassword, String newPassword) {
+    public boolean updatePassword(String email, String oldPass, String newPass) {
         User user = userRepo.findByEmail(email);
-        if (user != null && passwordEncoder.matches(oldPassword, user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(newPassword));
+        if (user != null && passwordEncoder.matches(oldPass, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPass));
             userRepo.save(user);
             return true;
         }
