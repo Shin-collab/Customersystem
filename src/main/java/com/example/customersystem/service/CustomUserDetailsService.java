@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String input) throws UsernameNotFoundException {
-        // ลองหาจาก Username ก่อน
+        // ลองหาจาก Username 
         User user = userRepo.findByUsername(input);
         
         // ถ้าไม่เจอค่อยลองหาจาก Email
