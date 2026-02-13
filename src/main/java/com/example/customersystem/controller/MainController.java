@@ -21,30 +21,27 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String index(Model model, Principal principal) {
-        if (principal != null) {
-            // 1. ดึง Username ของคนที่ล็อกอินอยู่ (ตัวเดิมที่พี่ใช้ดึงโปรไฟล์)
-            String username = principal.getName();
-            
-            // 2. ดึงเฉพาะลูกค้าที่ User คนนี้เป็นคนสร้าง
-            List<Customer> customers = customerRepo.findByCreatedBy(username);
-            model.addAttribute("customers", customers);
+    public String index(Model model, Principal p) {
+        if (p != null) {
+            String username = p.getName();
+        
+            List<Customer> list = customerRepo.findByCreatedBy(username);
+            model.addAttribute("customers", list);
 
-            // 3. ดึงข้อมูล User สำหรับโชว์ชื่อ/รูปโปรไฟล์
+            // ดึงโปรไฟล์คนล็อคอิน
             model.addAttribute("user", userRepo.findByUsername(username));
         }
         return "index";
     }
 
     @GetMapping("/profile")
-    public String viewProfile(Model model, Principal principal) {
-        if (principal != null) {
-            String username = principal.getName();
+    public String viewProfile(Model model, Principal p) {
+        if (p != null) {
+            String name = p.getName();
+            model.addAttribute("user", userRepo.findByUsername(name));
+
             
-            model.addAttribute("user", userRepo.findByUsername(username));
-            
-            // โชว์เฉพาะข้อมูลของตัวเองในหน้า Profile
-            model.addAttribute("customers", customerRepo.findByCreatedBy(username));
+            model.addAttribute("customers", customerRepo.findByCreatedBy(name));
         }
         return "profile";
     }
