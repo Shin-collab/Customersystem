@@ -86,7 +86,6 @@
             gap: 20px; 
         }
         
-        /* Search Logic Display */
         .search-container { position: relative; flex: 1; max-width: 450px; }
         .search-container i { 
             position: absolute; 
@@ -215,7 +214,7 @@
         
         <div class="user-section">
             <a th:href="@{/profile}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--tx); font-weight: 600;">
-                <img th:src="${user.avatar != null ? user.avatar : 'https://ui-avatars.com/api/?name='+user.name+'&background=eb008b&color=fff'}" 
+                <img id="topProfilePic" th:src="${user.avatar != null ? user.avatar : 'https://ui-avatars.com/api/?name='+user.name+'&background=eb008b&color=fff'}" 
                      style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--pk); object-fit: cover;">
                 <span th:text="${user.name}" style="font-size: 0.9rem;">User</span>
             </a>
@@ -292,7 +291,6 @@
         rows.forEach(r => {
             const match = r.innerText.toUpperCase().includes(v);
             r.style.display = match ? "" : "none";
-            // เพิ่ม Animation เล็กน้อยเวลาแถวปรากฏ
             if (match) {
                 r.style.animation = "fadeIn 0.3s ease";
             }
@@ -300,14 +298,26 @@
     }
 
     /**
-     * ระบบจัดการ Dark / Light Mode
+     * ระบบจัดการ Dark / Light Mode และการโหลดรูปโปรไฟล์
      */
     const toggleSwitch = document.querySelector('.theme-switch input');
-    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // ทำงานเมื่อโหลดหน้าเว็บเสร็จ
+    window.addEventListener('DOMContentLoaded', () => {
+        // 1. จัดการ Theme
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') toggleSwitch.checked = true;
 
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    if (currentTheme === 'dark') toggleSwitch.checked = true;
+        // 2. จัดการรูปโปรไฟล์ (ดึงจากเครื่องมาโชว์ที่มุมขวาบน)
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) {
+            const topPic = document.getElementById('topProfilePic');
+            if (topPic) topPic.src = savedAvatar;
+        }
+    });
 
+    // ฟังเหตุการณ์เปลี่ยน Theme
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
