@@ -241,14 +241,28 @@
         updateThemeUI(next);
     };
 
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeUI(savedTheme);
+    // โหลด Theme และรูปภาพเมื่อเปิดหน้าจอ
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) {
+            const previewImg = document.getElementById('preview');
+            if (previewImg) previewImg.src = savedAvatar;
+        }
+    });
 
     function handleImg(i) {
         if (i.files && i.files[0]) {
             let r = new FileReader();
-            r.onload = (e) => document.getElementById('preview').src = e.target.result;
+            r.onload = (e) => {
+                const imageData = e.target.result;
+                document.getElementById('preview').src = imageData;
+                // เซฟรูปลง
+                localStorage.setItem('userAvatar', imageData);
+            };
             r.readAsDataURL(i.files[0]);
         }
     }
